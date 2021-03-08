@@ -4,6 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 # Custom for this project
+/.vscode
 /data/raw/*
 /data/preprocessed/*
 /model/*
