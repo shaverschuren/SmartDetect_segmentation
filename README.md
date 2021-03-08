@@ -2,7 +2,7 @@
 CSR segmentation using image-to-image translation GANs, created in context of the SmartDetect COVID detection project. 
 
 **Project file structure:**
-`
+```
 |--- data --- raw\          % Used for storing raw (immutable) data
 |          |
 |          -- preprocessed\ % Used for storing the processed data
@@ -19,5 +19,4 @@ CSR segmentation using image-to-image translation GANs, created in context of th
 |
 |--- LICENCE                % MIT Licence
 |--- README.md              % This README
-|
-`
+```
