@@ -3,6 +3,16 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Custom for this project
+/data/raw/*
+/data/preprocessed/*
+/model/*
+
+!/data/README.txt
+!/data/raw/README.txt
+!/data/preprocessed/README.txt
+!/model/README.txt
+
 # User-specific files
 *.rsuser
 *.suo
