@@ -15,6 +15,8 @@ CSR segmentation using image-to-image translation GANs, created in context of th
 |
 |--- src\                   % Used for storing the source code
 |
+|--- util\                  % Used for storing basic utilities
+|
 |--- test\                  % Used for storing test case code
 |
 |--- LICENCE                % MIT Licence
