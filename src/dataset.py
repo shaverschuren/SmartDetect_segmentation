@@ -70,8 +70,8 @@ def generate_dataset(dataDir, split_dataset=False, train_or_test="", split_facto
     n_subjects = len(img_paths_shuffled)
 
     # Predefine source and target arrays
-    src_array = np.zeros((n_subjects, 512, 512))
-    tar_array = np.zeros((n_subjects, 512, 512))
+    src_array = np.zeros((n_subjects, 256, 256))
+    tar_array = np.zeros((n_subjects, 256, 256))
 
     # Loop over subjects and iteratively add images to the dataset arrays
     if verbose : printProgressBar(0, n_subjects, length=50)
@@ -93,7 +93,7 @@ def generate_dataset(dataDir, split_dataset=False, train_or_test="", split_facto
 
     if verbose: 
         dataset_size = (sys.getsizeof(src_array) + sys.getsizeof(tar_array)) / 10**9
-        print(f"Completed. Dataset consists of {n_subjects} images and {dataset_size:.2f} GB")
+        print(f"Completed. Dataset consists of {n_subjects} images and is {dataset_size:.2f} GB")
 
     return [src_array, tar_array]
 

@@ -148,7 +148,7 @@ def intensity_normalization(img_as_np, im_type=""):
     return img_as_np_fin.astype(array_type)
 
 
-def reshape_image(img_as_np, to_shape = (512, 512)):
+def reshape_image(img_as_np, to_shape = (256, 256)):
     """
     This function pads and resamples an image. Output is in PIL Image format
     It is used for the data normalization step of the preprocessing process.
