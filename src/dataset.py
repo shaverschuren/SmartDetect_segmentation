@@ -40,7 +40,9 @@ def generate_dataset(dataDir, split_dataset=False, train_or_test="", split_facto
     (processed) dataset is just over 90 MBi.
     """
 
-    if verbose : print(f"Extracting {train_or_test:s} dataset from {os.path.abspath(dataDir):s}")
+    if verbose: 
+        print(f"\n--- Performing data extraction ({train_or_test:s}) ---")
+        print(f"\nExtracting data from {os.path.abspath(dataDir):s}")
 
     # Extracting images from preprocessed data directories
     img_paths = glob(os.path.join(dataDir, "cxr", "*.png"))
