@@ -8,7 +8,7 @@
 /data/raw/*
 /data/preprocessed/*
 /model/*
-*/.ipynb_checkpoints
+*.ipynb_checkpoints
 
 !/data/README.txt
 !/data/raw/README.txt
