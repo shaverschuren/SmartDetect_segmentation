@@ -8,12 +8,14 @@
 /data/raw/*
 /data/preprocessed/*
 /model/*
+/logs/*
 *.ipynb_checkpoints
 
 !/data/README.txt
 !/data/raw/README.txt
 !/data/preprocessed/README.txt
 !/model/README.txt
+!/logs/README.txt
 
 # User-specific files
 *.rsuser

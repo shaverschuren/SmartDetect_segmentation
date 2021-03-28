@@ -19,6 +19,8 @@ CXR segmentation using image-to-image translation GANs, created in context of th
 |
 |--- test\                  % Used for storing test case code
 |
+|--- logs\                  % Used for storing training logs
+|
 |--- LICENCE                % MIT Licence
 |--- README.md              % This README
 ```
