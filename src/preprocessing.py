@@ -287,4 +287,4 @@ def preprocessing(rawDir = os.path.join("data", "raw"), preprocessedDir = os.pat
 
 
 if __name__ == "__main__":
-    preprocessing(rerun=True)
+    preprocessing(rerun=False)
