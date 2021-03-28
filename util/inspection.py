@@ -42,4 +42,6 @@ def inspect_dataset(dataset, dataset_name, verbose=True):
 
     plt.show()
 
-    return
+    print('\n')
+
+    return n_images, im_shape
