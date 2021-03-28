@@ -119,35 +119,5 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=10, n_batch=100):
 			summarize_performance(i, g_model, dataset)  
   
 
-# Define some basic directories to use in the rest of this program
-dataDir = os.path.join("data", "preprocessed")
-modelDir = "model"
-notebookDir = "notebook"
-
-# Setup GPU tensorflow session
-n_gpus = setup_tf_gpu_session()
-
-if __name__ == "__main__":
-    dataset_train = generate_dataset(dataDir, split_dataset=True, train_or_test='train')
-    dataset_test = generate_dataset(dataDir, split_dataset=True, train_or_test='test')
-    
-TrainImages=load_images(dataset_train)
-TestImages=load_images(dataset_test)
-TrainImagesSrc, TrainImagesTar=load_images(dataset_train)
-TestImagesSrc, TestImagesTar=load_images(dataset_test)
-
-
-_, image_shape = inspect_dataset(dataset_train, 'train')
-_, _ = inspect_dataset(dataset_test, 'test')
-   
-image_shape = (image_shape[0], image_shape[1], 1)
-
-g_model = define_generator(image_shape)
-d_model = define_discriminator(image_shape)
-gan_model = define_gan(g_model, d_model, image_shape)
-	
-  
-train(d_model,g_model,gan_model, TrainImages, n_epochs=5, n_batch=50)  
-  
 
   
