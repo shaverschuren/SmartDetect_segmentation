@@ -178,7 +178,6 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=100, n_batch=4):
 
 	# manually enumerate epochs
 	i = 0
-
 	for epoch in range(n_epochs):
 		print("\n"+print_style.BOLD+f"Epoch {epoch+1}/{n_epochs}:"+print_style.END)
 
@@ -194,10 +193,12 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=100, n_batch=4):
 			[X_realA, X_realB], y_real, used_idx = generate_real_samples(dataset_train, n_batch, n_patch, available_idx)
 			np.delete(available_idx, used_idx)
 
+			# generate a batch of fake samples
+			X_fakeB, y_fake = generate_fake_samples(g_model, X_realA, n_patch)
+
+			# Perform training on this batch (supress UserWarnings)
 			with warnings.catch_warnings():
-				warnings.simplefilter("ignore")
-				# generate a batch of fake samples
-				X_fakeB, y_fake = generate_fake_samples(g_model, X_realA, n_patch)
+				warnings.simplefilter("ignore", UserWarning)
 				# update discriminator for real samples
 				d_loss1 = d_model.train_on_batch([X_realA, X_realB], y_real)
 				# update discriminator for generated samples
