@@ -70,21 +70,21 @@ def summarize_performance(step, g_model, dataset, n_samples=3):
         plt.figure(figsize=(10,10))
         plt.subplot(3, n_samples, 1 + i)
         plt.axis('off')
-        plt.imshow(X_realA[i], aspect='equal')
+        plt.imshow(X_realA[i], cmap='gray', aspect='equal')
         plt.show()
 	# plot generated target image
     for i in range(n_samples):
         plt.figure(figsize=(10,10))
         plt.subplot(3, n_samples, 1 + n_samples + i)
         plt.axis('off')
-        plt.imshow(X_fakeB[i], aspect='equal')
+        plt.imshow(X_fakeB[i], cmap='gray', aspect='equal')
         plt.show()
 	# plot real target image
     for i in range(n_samples):
         plt.figure(figsize=(10,10))
         plt.subplot(3, n_samples, 1 + n_samples*2 + i)
         plt.axis('off')
-        plt.imshow(X_realB[i], aspect='equal')
+        plt.imshow(X_realB[i], cmap='gray', aspect='equal')
         plt.show()
 	# save plot to file
     filename1 = 'plot_%06d.png' % (step+1)
