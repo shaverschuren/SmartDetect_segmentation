@@ -152,10 +152,10 @@ def define_gan(g_model, d_model, image_shape):
 	# connect the source input and generator output to the discriminator input
     dis_out = d_model([in_src, gen_out])
 	# src image as input, generated image and classification output
+        
     model = Model(in_src, [dis_out, gen_out])
 
 	# compile model
     opt = Adam(lr=0.0002, beta_1=0.5)
     model.compile(loss=['binary_crossentropy', 'mae'], optimizer=opt, loss_weights=[1,100])
-    
     return model
