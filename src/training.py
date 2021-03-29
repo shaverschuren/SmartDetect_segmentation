@@ -204,7 +204,7 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=100, n_batch=4):
 				# update discriminator for generated samples
 				d_loss2 = d_model.train_on_batch([X_realA, X_fakeB], y_fake)
 				# update the generator
-				g_loss,  _, _ = gan_model.train_on_batch(X_realA, [y_real, X_fakeB])			
+				g_loss,  _, _ = gan_model.train_on_batch(X_realA, [y_real, X_realB])			
 			
 			# Store losses (tensorboard) 
 			if (i+1) % (bat_per_epo // 50) == 0:
