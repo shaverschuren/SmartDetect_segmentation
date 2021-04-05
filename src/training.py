@@ -1,3 +1,6 @@
+import sys
+if "" not in sys.path : sys.path.append("")
+
 import tensorflow as tf
 import os
 from tqdm import tqdm
