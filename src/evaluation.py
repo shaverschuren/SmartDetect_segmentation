@@ -28,3 +28,8 @@ def predict_and_plot_image(image, model):
     pred_img=pred[0,:,:,0]
     plt.imshow(pred_img, cmap='gray')
     plt.show()
+
+def dice(input_img, test_img):
+    k=1
+    dice = np.sum(input_img[test_img==k])*2.0 / (np.sum(input_img) + np.sum(test_img))
+    print('Dice similarity score is {}'.format(dice))
