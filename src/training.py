@@ -148,7 +148,8 @@ def split_train_val(dataset, split_factor=0.8):
     return dataset_train, dataset_val
 
 
-def train(d_model, g_model, gan_model, dataset, n_epochs=100, n_batch=4):
+def train(d_model, g_model, gan_model, dataset, n_epochs=1000, n_batch=4,
+          early_stopping=True, patience=10):
     """
     This function performs the actual training of the GAN model.
     """
@@ -191,6 +192,9 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=100, n_batch=4):
     logger_im = Logger(os.path.join(logsDir, "im"))
     logger_train = Logger(os.path.join(logsDir, "mae_train"))
     logger_val = Logger(os.path.join(logsDir, "mae_val"))
+
+    # Initialize early stopping
+    earlyStop_list = []
 
     # manually enumerate epochs
     i = 0
@@ -253,5 +257,25 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=100, n_batch=4):
         # Summarize the performance of this epoch and store the model
         summarize_performance(i, g_model, dataset_train, dataset_val,
                               modelsDir, logger_im, current_time)
+
+        # Check whether earlyStopping critereon is met (if applicable)
+        if early_stopping:
+            # Append val loss list
+            mae_val = check_mae(g_model, dataset_val, 3)
+            earlyStop_list.append(mae_val)
+
+            # Trim list (if applicable)
+            while len(earlyStop_list) > patience:
+                earlyStop_list = earlyStop_list[1:]
+
+            # Check for criterion
+            if len(earlyStop_list) < patience:
+                pass
+            else:
+                stop_criterion = (earlyStop_list[0] > earlyStop_list[1:]).all()
+                if stop_criterion:
+                    print(f"\n>Stopping criterion met (patience = {patience})."
+                          f"\n>Exiting training with MAE of {mae_val:.6f}")
+                    break
 
     return current_time
