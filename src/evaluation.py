@@ -4,7 +4,7 @@ if "" not in sys.path : sys.path.append("")
 import numpy as np
 from keras.models import load_model
 import matplotlib.pyplot as plt
-    
+
 
 def evaluate_model(dataset_test, loaded_model):
     X_test, Y_test = dataset_test
