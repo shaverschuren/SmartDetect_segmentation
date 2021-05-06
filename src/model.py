@@ -1,3 +1,5 @@
+import numpy as np
+import tensorflow as tf
 from keras.optimizers import Adam
 from keras.initializers import RandomNormal
 from keras.models import Model
@@ -26,32 +28,37 @@ def define_discriminator(image_shape=(256, 256, 1)):
     # concatenate images channel-wise
     merged = Concatenate()([in_src_image, in_target_image])
     # C64
-    d = Conv2D(64, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(merged)
+    d = Conv2D(64, (4, 4), strides=(2, 2), padding='same',
+               kernel_initializer=init)(merged)
     d = LeakyReLU(alpha=0.2)(d)
     # C128
-    d = Conv2D(128, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d)
+    d = Conv2D(128, (4, 4), strides=(2, 2), padding='same',
+               kernel_initializer=init)(d)
     d = BatchNormalization()(d)
     d = LeakyReLU(alpha=0.2)(d)
     # C256
-    d = Conv2D(256, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d)
+    d = Conv2D(256, (4, 4), strides=(2, 2), padding='same',
+               kernel_initializer=init)(d)
     d = BatchNormalization()(d)
     d = LeakyReLU(alpha=0.2)(d)
     # C512
-    d = Conv2D(512, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d)
+    d = Conv2D(512, (4, 4), strides=(2, 2), padding='same',
+               kernel_initializer=init)(d)
     d = BatchNormalization()(d)
     d = LeakyReLU(alpha=0.2)(d)
     # second last output layer
-    d = Conv2D(512, (4,4), padding='same', kernel_initializer=init)(d)
+    d = Conv2D(512, (4, 4), padding='same', kernel_initializer=init)(d)
     d = BatchNormalization()(d)
     d = LeakyReLU(alpha=0.2)(d)
     # patch output
-    d = Conv2D(1, (4,4), padding='same', kernel_initializer=init)(d)
+    d = Conv2D(1, (4, 4), padding='same', kernel_initializer=init)(d)
     patch_out = Activation('sigmoid')(d)
     # define model
     model = Model([in_src_image, in_target_image], patch_out)
     # compile model
     opt = Adam(lr=0.0002, beta_1=0.5)
-    model.compile(loss='binary_crossentropy', optimizer=opt, loss_weights=[0.5])
+    model.compile(loss='binary_crossentropy', optimizer=opt,
+                  loss_weights=[0.5])
 
     return model
 
@@ -64,7 +71,8 @@ def define_encoder_block(layer_in, n_filters, batchnorm=True):
     # weight initialization
     init = RandomNormal(stddev=0.02)
     # add downsampling layer
-    g = Conv2D(n_filters, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(layer_in)
+    g = Conv2D(n_filters, (4, 4), strides=(2, 2), padding='same',
+               kernel_initializer=init)(layer_in)
     # conditionally add batch normalization
     if batchnorm:
         g = BatchNormalization()(g, training=True)
@@ -82,7 +90,8 @@ def decoder_block(layer_in, skip_in, n_filters, dropout=True):
     # weight initialization
     init = RandomNormal(stddev=0.02)
     # add upsampling layer
-    g = Conv2DTranspose(n_filters, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(layer_in)
+    g = Conv2DTranspose(n_filters, (4, 4), strides=(2, 2), padding='same',
+                        kernel_initializer=init)(layer_in)
     # add batch normalization
     g = BatchNormalization()(g, training=True)
     # conditionally add dropout
@@ -115,7 +124,8 @@ def define_generator(image_shape=(256, 256, 1)):
     e6 = define_encoder_block(e5, 512)
     e7 = define_encoder_block(e6, 512)
     # bottleneck, no batch norm and relu
-    b = Conv2D(512, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(e7)
+    b = Conv2D(512, (4, 4), strides=(2, 2), padding='same',
+               kernel_initializer=init)(e7)
     b = Activation('relu')(b)
     # decoder model
     d1 = decoder_block(b, e7, 512)
@@ -125,9 +135,10 @@ def define_generator(image_shape=(256, 256, 1)):
     d5 = decoder_block(d4, e3, 256, dropout=False)
     d6 = decoder_block(d5, e2, 128, dropout=False)
     d7 = decoder_block(d6, e1, 64, dropout=False)
-    
+
     # Changed the 1 below from 3 (gray ipv RGB)
-    g = Conv2DTranspose(1, (4,4), strides=(2,2), padding='same', kernel_initializer=init)(d7)
+    g = Conv2DTranspose(1, (4, 4), strides=(2, 2), padding='same',
+                        kernel_initializer=init)(d7)
     out_image = Activation('tanh')(g)
     # define model
     model = Model(in_image, out_image)
@@ -135,10 +146,29 @@ def define_generator(image_shape=(256, 256, 1)):
     return model
 
 
+def negDSC(y_true, y_pred):
+    """
+    This function defines an additional generator loss term.
+
+    It is based on the Dice Score Coefficient (DSC),
+    yet is required to be in the form of a loss term.
+    Therefore, we take:
+    negDSC = 1 - DSC
+    """
+
+    # Prepare inputs
+    y_true = tf.cast(y_true, tf.float32)
+    y_pred = tf.math.sigmoid(y_pred)
+
+    # negDSC = 1 - DSC
+    return 1 - (tf.reduce_sum(y_true * y_pred) * 2.0
+                / tf.reduce_sum(y_true + y_pred))
+
+
 def define_gan(g_model, d_model, image_shape):
     """
-    Here, we define the final gan model, based on the generator and discriminator models.
-    We also pass the input shape.
+    Here, we define the final gan model, based on the generator and
+    discriminator models. We also pass the input shape.
     """
 
     # make weights in the discriminator not trainable
@@ -152,10 +182,11 @@ def define_gan(g_model, d_model, image_shape):
     # connect the source input and generator output to the discriminator input
     dis_out = d_model([in_src, gen_out])
     # src image as input, generated image and classification output
-        
-    model = Model(in_src, [dis_out, gen_out])
+
+    model = Model(in_src, [dis_out, gen_out, gen_out])
 
     # compile model
     opt = Adam(lr=0.0002, beta_1=0.5)
-    model.compile(loss=['binary_crossentropy', 'mae'], optimizer=opt, loss_weights=[1,100])
+    model.compile(loss=['binary_crossentropy', 'mae', negDSC], optimizer=opt,
+                  loss_weights=[1, 100, 100])
     return model
