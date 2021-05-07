@@ -272,7 +272,7 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=1000, n_batch=4,
             if len(earlyStop_list) < patience:
                 pass
             else:
-                stop_criterion = (earlyStop_list[0] > earlyStop_list[1:]).all()
+                stop_criterion = (earlyStop_list[0] < earlyStop_list[1:]).all()
                 if stop_criterion:
                     print(f"\n>Stopping criterion met (patience = {patience})."
                           f"\n>Exiting training with MAE of {mae_val:.6f}")
