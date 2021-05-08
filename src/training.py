@@ -149,7 +149,7 @@ def split_train_val(dataset, split_factor=0.8):
 
 
 def train(d_model, g_model, gan_model, dataset, n_epochs=1000, n_batch=4,
-          early_stopping=True, patience=10):
+          early_stopping=True, patience=50):
     """
     This function performs the actual training of the GAN model.
     """
@@ -261,11 +261,11 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=1000, n_batch=4,
         # Check whether earlyStopping critereon is met (if applicable)
         if early_stopping:
             # Append val loss list
-            mae_val = check_mae(g_model, dataset_val, 3)
-            earlyStop_list.append(mae_val)
+            mae_val = check_mae(g_model, dataset_val, 5)
+            earlyStop_list = earlyStop_list + [mae_val]
 
             # Trim list (if applicable)
-            while len(earlyStop_list) > patience:
+            while len(earlyStop_list) > patience + 1:
                 earlyStop_list = earlyStop_list[1:]
 
             # Check for criterion
@@ -274,8 +274,10 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=1000, n_batch=4,
             else:
                 stop_criterion = (earlyStop_list[0] < earlyStop_list[1:]).all()
                 if stop_criterion:
-                    print(f"\n>Stopping criterion met (patience = {patience})."
-                          f"\n>Exiting training with MAE of {mae_val:.6f}")
+                    print(f"\n>Stopping criterion met "
+                          f"(patience = {len(earlyStop_list) - 1})."
+                          f"\n>Exiting training with MAE of {mae_val:.6f} "
+                          f"and a highest MAE of {earlyStop_list[0]}")
                     break
 
     return current_time
