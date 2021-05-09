@@ -149,7 +149,7 @@ def split_train_val(dataset, split_factor=0.8):
 
 
 def train(d_model, g_model, gan_model, dataset, n_epochs=1000, n_batch=4,
-          early_stopping=True, patience=50):
+          early_stopping=True, patience=100):
     """
     This function performs the actual training of the GAN model.
     """
@@ -192,7 +192,10 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=1000, n_batch=4,
     logger_im = Logger(os.path.join(logsDir, "im"))
     logger_train = Logger(os.path.join(logsDir, "mae_train"))
     logger_val = Logger(os.path.join(logsDir, "mae_val"))
-    logger_stopDelta = Logger(os.path.join(logsDir, "stop_delta"))
+
+    if early_stopping:
+        logger_stopMAE = Logger(os.path.join(logsDir, "stop_mae"))
+        logger_stopDelta = Logger(os.path.join(logsDir, "stop_delta"))
 
     # Initialize early stopping
     earlyStop_list = []
@@ -262,13 +265,15 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=1000, n_batch=4,
         # Check whether earlyStopping critereon is met (if applicable)
         if early_stopping:
             # Append val loss list
-            mae_val = check_mae(g_model, dataset_val, 10)
+            mae_val = check_mae(g_model, dataset_val, 20)
             earlyStop_list = earlyStop_list + [mae_val]
 
             print(f">Validation MAE = {mae_val:.6f}")
+            logger_stopMAE.log_scalar('run_{}'.format(current_time),
+                                      mae_val, i)
 
             # Calculate moving average size
-            n_avg = math.ceil(patience / 10) if patience / 10 > 3. else 3
+            n_avg = math.ceil(patience / 5) if patience / 5 > 5. else 5
 
             # # Trim list (if applicable)
             while len(earlyStop_list) > patience + 1 + n_avg // 2:
