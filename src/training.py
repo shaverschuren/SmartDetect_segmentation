@@ -90,7 +90,7 @@ def summarize_performance(step, g_model, dataset_train, dataset_val, modelsDir,
     # save the generator model
     filename = os.path.join(modelsDir, 'g_model_{:07d}.h5'.format((step + 1)))
     g_model.save(filename)
-    print('>Saved model: {}s'.format(filename))
+    print('>Saved model: {}'.format(filename))
 
     logger.log_images('run_{}_step{}_train'.format(run, step),
                       [X_realA_train[0], X_fakeB_train[0], X_realB_train[0]],
