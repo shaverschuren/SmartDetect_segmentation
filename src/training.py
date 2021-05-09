@@ -149,7 +149,7 @@ def split_train_val(dataset, split_factor=0.8):
 
 
 def train(d_model, g_model, gan_model, dataset, n_epochs=1000, n_batch=4,
-          early_stopping=True, patience=50):
+          early_stopping=True, patience=20):
     """
     This function performs the actual training of the GAN model.
     """
@@ -192,6 +192,7 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=1000, n_batch=4,
     logger_im = Logger(os.path.join(logsDir, "im"))
     logger_train = Logger(os.path.join(logsDir, "mae_train"))
     logger_val = Logger(os.path.join(logsDir, "mae_val"))
+    logger_stopDelta = Logger(os.path.join(logsDir, "stop_delta"))
 
     # Initialize early stopping
     earlyStop_list = []
@@ -261,23 +262,42 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=1000, n_batch=4,
         # Check whether earlyStopping critereon is met (if applicable)
         if early_stopping:
             # Append val loss list
-            mae_val = check_mae(g_model, dataset_val, 5)
+            mae_val = check_mae(g_model, dataset_val, 10)
             earlyStop_list = earlyStop_list + [mae_val]
 
-            # Trim list (if applicable)
-            while len(earlyStop_list) > patience + 1:
+            print(f">Validation MAE = {mae_val:.6f}")
+
+            # Calculate moving average size
+            n_avg = math.ceil(patience / 10) if patience / 10 > 3. else 3
+
+            # # Trim list (if applicable)
+            while len(earlyStop_list) > patience + 1 + n_avg // 2:
                 earlyStop_list = earlyStop_list[1:]
 
             # Check for criterion
             if len(earlyStop_list) < patience:
                 pass
             else:
-                stop_criterion = (earlyStop_list[0] < earlyStop_list[1:]).all()
+                # Stop if all "new" values are worse than the previous
+                # epochs. Perform a rolling average for smoothing.
+                earlyStop_avgs = \
+                    np.convolve(np.array(earlyStop_list),
+                                np.ones(n_avg), 'valid') / n_avg
+
+                stop_criterion = (earlyStop_avgs[0]
+                                  < earlyStop_avgs[1:]).all()
+
+                stop_delta = \
+                    np.max(earlyStop_avgs[1:] - earlyStop_avgs[0])
+
+                logger_stopDelta.log_scalar('run_{}'.format(current_time),
+                                            stop_delta, i)
+
                 if stop_criterion:
                     print(f"\n>Stopping criterion met "
                           f"(patience = {len(earlyStop_list) - 1})."
                           f"\n>Exiting training with MAE of {mae_val:.6f} "
-                          f"and a highest MAE of {earlyStop_list[0]}")
+                          f"and a 'best' avg MAE of {earlyStop_avgs[0]:.6f}")
                     break
 
     return current_time
