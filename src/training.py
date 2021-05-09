@@ -288,7 +288,7 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=1000, n_batch=4,
                                   < earlyStop_avgs[1:]).all()
 
                 stop_delta = \
-                    np.max(earlyStop_avgs[1:] - earlyStop_avgs[0])
+                    np.max(earlyStop_avgs[0] - earlyStop_avgs[1:])
 
                 logger_stopDelta.log_scalar('run_{}'.format(current_time),
                                             stop_delta, i)
