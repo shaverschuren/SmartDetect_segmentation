@@ -156,9 +156,12 @@ def negDSC(y_true, y_pred):
     negDSC = 1 - DSC
     """
 
+    # Constant tensor for binarization
+    const = tf.constant([0.5])
+
     # Prepare inputs
-    y_true = tf.cast(y_true, tf.float32)
-    y_pred = tf.math.sigmoid(y_pred)
+    y_true = tf.cast(tf.math.greater(y_true, const), tf.float32)
+    y_pred = tf.cast(tf.math.greater(y_pred, const), tf.float32)
 
     # negDSC = 1 - DSC
     return 1 - (tf.reduce_sum(y_true * y_pred) * 2.0
