@@ -98,6 +98,8 @@ def summarize_performance(step, g_model, dataset_train, dataset_val, modelsDir,
     logger.log_images('run_{}_step{}_val'.format(run, step),
                       [X_realA_val[0], X_fakeB_val[0], X_realB_val[0]],
                       step)
+    
+    return filename
 
 
 def check_mae(g_model, dataset, n_samples=3):
@@ -259,8 +261,9 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=1000, n_batch=4,
             i += 1
 
         # Summarize the performance of this epoch and store the model
-        summarize_performance(i, g_model, dataset_train, dataset_val,
-                              modelsDir, logger_im, current_time)
+        save_file = \
+            summarize_performance(i, g_model, dataset_train, dataset_val,
+                                  modelsDir, logger_im, current_time)
 
         # Check whether earlyStopping critereon is met (if applicable)
         if early_stopping:
@@ -305,4 +308,4 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=1000, n_batch=4,
                           f"and a 'best' avg MAE of {earlyStop_avgs[0]:.6f}")
                     break
 
-    return current_time
+    return current_time, save_file
