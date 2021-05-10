@@ -2,6 +2,7 @@ import sys
 if "" not in sys.path: sys.path.append("")
 
 import numpy as np
+from model import negDSC
 from keras.models import load_model
 import matplotlib.pyplot as plt
 
@@ -11,9 +12,17 @@ def evaluate_model(dataset_test, loaded_model):
     X_test = np.expand_dims(X_test, axis=3)
     Y_test = np.expand_dims(Y_test, axis=3)
     loaded_model.compile(loss='binary_crossentropy', optimizer='adam',
-                         metrics=['accuracy'])
-    score = loaded_model.evaluate(X_test, Y_test, verbose=0)
-    print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1] * 100))
+                         metrics=['accuracy', negDSC, 'mae'])
+
+    scores = loaded_model.evaluate(X_test, Y_test, verbose=0)
+
+    for i in range(len(scores)):
+        if loaded_model.metrics_names[i] == "loss":
+            pass
+        elif loaded_model.metrics_names[i] == "negDSC":
+            print(f"DSC       : {1 - scores[i]:.4f}")
+        else:
+            print(f"{loaded_model.metrics_names[i]:10s}: {scores[i]:.4f}")
 
 
 def predict_dataset(dataset, model):
@@ -29,7 +38,13 @@ def predict_and_plot_image(image, model):
     img = np.expand_dims(image, axis=[0, 3])
     pred = model.predict(img)
     pred_img = pred[0, :, :, 0]
+    plt.figure()
+    plt.subplot(1, 2, 1)
+    plt.imshow(image, cmap='gray')
+    plt.axis('off')
+    plt.subplot(1, 2, 2)
     plt.imshow(pred_img, cmap='gray')
+    plt.axis('off')
     plt.show()
 
 
