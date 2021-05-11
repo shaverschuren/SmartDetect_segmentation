@@ -4,6 +4,7 @@ if "" not in sys.path: sys.path.append("")
 import numpy as np
 from PIL import Image
 from preprocessing import intensity_normalization, reshape_image
+from postprocessing import postprocess_mask
 
 
 def predict_raw_image(in_path, out_path, model):
@@ -36,6 +37,9 @@ def predict_raw_image(in_path, out_path, model):
     # Binarize mask
     mask_arr[mask_arr < 0.5] = 0
     mask_arr[mask_arr >= 0.5] = 1
+
+    # Post-process mask
+    mask_arr = postprocess_mask(mask_arr)
 
     # Reshape mask to original image size
     mask_img = Image.fromarray(mask_arr.astype(np.uint8))
