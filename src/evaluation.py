@@ -101,3 +101,10 @@ def dice(input_img, test_img):
     dice = np.sum(input_img[test_img == k]) * 2.0 \
         / (np.sum(input_img) + np.sum(test_img))
     print('Dice similarity score is {}'.format(dice))
+
+
+if __name__ == "__main__":
+    predDir = os.path.join("data", "test", "pred")
+    tarDir = os.path.join("data", "test", "tar")
+
+    evaluate_masks(predDir, tarDir)
