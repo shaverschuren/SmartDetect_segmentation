@@ -7,6 +7,7 @@
 /.vscode
 /data/raw/*
 /data/preprocessed/*
+/data/test/*
 /model/*
 /logs/*
 *.ipynb_checkpoints
