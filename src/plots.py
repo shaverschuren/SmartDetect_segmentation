@@ -90,4 +90,6 @@ def plot_subjects(testDir, subject_list):
 
 if __name__ == "__main__":
     plot_subjects(os.path.join("data", "test"),
-                  ["0_005", "0_071", "0_073"])
+                  ["0_005", "1_153", "2_104",   # "easy" examples (all 3 sets)
+                   "0_431", "0_474", "1_003",   # "hard" pathology examples
+                   "0_073", "2_059", "0_154"])  # "hard" non-pathology examples
