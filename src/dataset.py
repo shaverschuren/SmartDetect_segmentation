@@ -2,6 +2,7 @@ import sys
 if "" not in sys.path: sys.path.append("")
 
 import os
+import shutil
 from glob import glob
 import numpy as np
 import random
@@ -73,6 +74,13 @@ def generate_dataset(dataDir, split_dataset=False, train_or_test="",
                 img_paths[int(len(img_paths) * split_factor) + 1:]
             mask_paths_shuffled = \
                 mask_paths[int(len(img_paths) * split_factor) + 1:]
+
+            # Create test set save directories (for easier evaluation)
+            if not os.path.isdir(os.path.join("data", "test", "src")):
+                os.mkdir(os.path.join("data", "test", "src"))
+            if not os.path.isdir(os.path.join("data", "test", "tar")):
+                os.mkdir(os.path.join("data", "test", "tar"))
+
         else:
             raise ValueError("The value of parameter 'train_or_test' should "
                              "be either 'train' or 'test'")
@@ -91,6 +99,12 @@ def generate_dataset(dataDir, split_dataset=False, train_or_test="",
     for subject_n in range(n_subjects):
         src_path = img_paths_shuffled[subject_n]
         tar_path = mask_paths_shuffled[subject_n]
+
+        if train_or_test == "test":
+            shutil.copyfile(src_path, os.path.join("data", "test", "src",
+                            os.path.split(src_path)[-1]))
+            shutil.copyfile(tar_path, os.path.join("data", "test", "tar",
+                            os.path.split(tar_path)[-1]))
 
         src_img = np.array(Image.open(src_path))
         tar_img = np.array(Image.open(tar_path))
@@ -116,4 +130,4 @@ def generate_dataset(dataDir, split_dataset=False, train_or_test="",
 
 if __name__ == "__main__":
     dataset = generate_dataset(os.path.join("data", "preprocessed"),
-                               True, "train")
+                               True, "test")
