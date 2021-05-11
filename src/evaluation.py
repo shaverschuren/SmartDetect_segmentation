@@ -1,10 +1,58 @@
 import sys
 if "" not in sys.path: sys.path.append("")
 
+import os
 import numpy as np
+from glob import glob
 from model import negDSC
+from PIL import Image
 from keras.models import load_model
 import matplotlib.pyplot as plt
+
+
+def evaluate_masks(predDir, tarDir):
+    """
+    This function evaluates masks from files.
+    It requires the prediction directory and target directory,
+    and assumes that mask-pairs have the same file-name.
+    """
+
+    # Initialize lists
+    prediction_list = glob(os.path.join(predDir, "*.png"))
+    target_list = [pred.replace(predDir, tarDir) for pred in prediction_list]
+
+    acc_list = []
+    dsc_list = []
+    mae_list = []
+    # Loop over mask pairs
+    for i in range(len(prediction_list)):
+        pred_path = prediction_list[i]
+        tar_path = target_list[i]
+
+        # Read masks
+        pred_arr = np.array(Image.open(pred_path))
+        tar_arr = np.array(Image.open(tar_path))
+
+        # Normalize masks
+        pred_arr = pred_arr.astype('float') / np.max(pred_arr)
+        tar_arr = tar_arr.astype('float') / np.max(tar_arr)
+
+        acc = np.sum(pred_arr == tar_arr) / np.size(pred_arr)
+        dsc = 1 - negDSC(pred_arr, tar_arr)
+        mae = np.sum(np.absolute((pred_arr - tar_arr))) / np.size(pred_arr)
+
+        acc_list.append(acc)
+        dsc_list.append(dsc)
+        mae_list.append(mae)
+
+    acc_mu, acc_std = (np.mean(acc_list), np.std(acc_list))
+    dsc_mu, dsc_std = (np.mean(dsc_list), np.std(dsc_list))
+    mae_mu, mae_std = (np.mean(mae_list), np.std(mae_list))
+
+    print(f"\n--- Evaluation metrics ---\n"
+          f"\nAccuracy = {acc_mu:.4f} +/- {acc_std:.4f}"
+          f"\nDSC      = {dsc_mu:.4f} +/- {dsc_std:.4f}"
+          f"\nMAE      = {mae_mu:.4f} +/- {mae_std:.4f}")
 
 
 def evaluate_model(dataset_test, loaded_model):
@@ -26,9 +74,9 @@ def evaluate_model(dataset_test, loaded_model):
 
 
 def predict_dataset(dataset, model):
-    X_test, Y_test = dataset
+    X_test, _ = dataset
     X_test = np.expand_dims(X_test, axis=3)
-    # Y_test = np.expand_dims(Y_test, axis=3)
+
     predicted = model.predict(X_test)
     predicted_images = predicted[:, :, :, 0]
     return predicted_images
