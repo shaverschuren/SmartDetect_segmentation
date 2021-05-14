@@ -6,7 +6,6 @@ from glob import glob
 import warnings
 import numpy as np
 from PIL import Image, ImageFilter
-from util.general import *
 
 
 def drawContour(m, s, RGB):

@@ -7,7 +7,7 @@ from glob import glob
 import numpy as np
 import random
 from PIL import Image
-from util.general import *
+from util.general import printProgressBar
 
 
 def convert_img_format(src_img, tar_img):

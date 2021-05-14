@@ -1,5 +1,7 @@
 # SmartDetect_segmentation
-CXR segmentation using image-to-image translation GANs, created in context of the SmartDetect COVID detection project. 
+CXR segmentation using image-to-image translation GANs, created in context of the SmartDetect COVID-19 detection project. 
+
+Please refer to `doc/finalReport.pdf` for any further information.
 
 **Project file structure:**
 ```
@@ -9,15 +11,15 @@ CXR segmentation using image-to-image translation GANs, created in context of th
 |          |
 |          -- results\      % Used for storing the results (for evaluation)
 |
-|--- model\                 % Used for storing models and model weights
+|--- doc\                   % Used for storing documentation (such as the final report)
+|
+|--- model\                 % Used for storing models and model weights (i.e. the final model)
 |
 |--- notebook\              % Used for storing the notebooks
 |
 |--- src\                   % Used for storing the source code
 |
 |--- util\                  % Used for storing basic utilities
-|
-|--- test\                  % Used for storing test case code
 |
 |--- logs\                  % Used for storing training logs
 |

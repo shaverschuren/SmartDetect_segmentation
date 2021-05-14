@@ -6,7 +6,7 @@ from glob import glob
 import warnings
 import numpy as np
 from PIL import Image
-from util.general import *
+from util.general import printProgressBar, print_result, print_warning
 
 
 def generate_paired_lists(cxr_paths, mask_paths, subset_n, split_masks=False):
@@ -144,8 +144,9 @@ def intensity_normalization(img_as_np, im_type=""):
     new_max = 255
     array_type = np.uint8
 
-    img_as_np_corr = (((new_img_as_np - img_min) / img_max)
-                      * (new_max - new_min)) + new_min
+    img_as_np_corr = \
+        (((new_img_as_np - img_min) / img_max) * (new_max - new_min)) \
+        + new_min
 
     # If applicable, invert the image
     if im_type.lower() == "cxr":

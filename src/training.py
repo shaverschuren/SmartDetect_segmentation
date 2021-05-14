@@ -8,10 +8,9 @@ from tqdm import tqdm
 from datetime import datetime
 import numpy as np
 import math
+import random
 import warnings
-from util.general import *
-from util.inspection import *
-from util.tf_session import *
+from util.inspection import print_style
 
 
 class Logger(object):
@@ -99,7 +98,7 @@ def summarize_performance(step, g_model, dataset_train, dataset_val, modelsDir,
     logger.log_images('run_{}_step{}_val'.format(run, step),
                       [X_realA_val[0], X_fakeB_val[0], X_realB_val[0]],
                       step)
-    
+
     return filename
 
 
@@ -196,12 +195,12 @@ def train(d_model, g_model, gan_model, dataset, n_epochs=1000, n_batch=4,
     logger_train = Logger(os.path.join(logsDir, "mae_train"))
     logger_val = Logger(os.path.join(logsDir, "mae_val"))
 
-    if early_stopping:
-        logger_stopMAE = Logger(os.path.join(logsDir, "stop_mae"))
-        logger_stopDelta = Logger(os.path.join(logsDir, "stop_delta"))
+    logger_stopMAE = Logger(os.path.join(logsDir, "stop_mae"))
+    logger_stopDelta = Logger(os.path.join(logsDir, "stop_delta"))
 
     # Initialize early stopping
     earlyStop_list = []
+    save_file = ""
 
     # manually enumerate epochs
     i = 0

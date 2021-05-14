@@ -6,7 +6,6 @@ import numpy as np
 from glob import glob
 from model import negDSC
 from PIL import Image
-from keras.models import load_model
 import matplotlib.pyplot as plt
 
 

@@ -1,4 +1,4 @@
-# General util file. 
+# General util file.
 # Used for storing very basic functions used throughout the project.
 
 def print_result(succeeded=True):
@@ -9,17 +9,18 @@ def print_result(succeeded=True):
         print("\033[91mFAIL\033[0m")
     else:
         raise ValueError("Parameter 'succeeded' should be a boolean")
-    
+
     return
 
 
 def print_warning(warning):
 
-    print("\033[93mWARNING ("+warning+")\033[0m")
+    print("\033[93mWARNING (" + warning + ")\033[0m")
     return
 
 
-def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '#', printEnd = "\r"):
+def printProgressBar(iteration, total, prefix='', suffix='', decimals=1,
+                     length=100, fill='#', printEnd="\r"):
     """
     Call in a loop to create terminal progress bar
     @params:
@@ -35,19 +36,20 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
     percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
     filledLength = int(length * iteration // total)
     bar = fill * filledLength + '-' * (length - filledLength)
-    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
+    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end=printEnd)
     # Print New Line on Complete
-    if iteration == total: 
+    if iteration == total:
         print()
 
+
 class print_style:
-   PURPLE = '\033[95m'
-   CYAN = '\033[96m'
-   DARKCYAN = '\033[36m'
-   BLUE = '\033[94m'
-   GREEN = '\033[92m'
-   YELLOW = '\033[93m'
-   RED = '\033[91m'
-   BOLD = '\033[1m'
-   UNDERLINE = '\033[4m'
-   END = '\033[0m'
+    PURPLE = '\033[95m'
+    CYAN = '\033[96m'
+    DARKCYAN = '\033[36m'
+    BLUE = '\033[94m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    RED = '\033[91m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    END = '\033[0m'
