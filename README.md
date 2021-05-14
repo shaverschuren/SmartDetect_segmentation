@@ -1,6 +1,12 @@
 # SmartDetect_segmentation
 CXR segmentation using image-to-image translation GANs, created in context of the SmartDetect COVID-19 detection project. 
 
+For recreation of the testing environment (using `anaconda3`), please undertake the following steps:
+
+- Clone this repository and `cd` to its root.
+- Create a new conda environment with Python: `conda create -n <your_env_name> python`
+- Install the requirements using `pip`: `pip install -r requirements.txt`
+
 Please refer to `doc/finalReport.pdf` for any further information.
 
 **Project file structure:**
