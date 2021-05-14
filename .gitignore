@@ -16,6 +16,7 @@
 !/data/raw/README.txt
 !/data/preprocessed/README.txt
 !/model/README.txt
+!/model/finalModel.h5
 !/logs/README.txt
 
 # User-specific files
