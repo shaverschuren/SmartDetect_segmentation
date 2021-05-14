@@ -37,7 +37,7 @@ class Logger(object):
 def generate_real_samples(dataset, n_samples, patch_shape, available_idx=None):
     """
     Function that selects a batch of random samples from a list of available
-    ones, returns images and target.
+    ones, returns images, masks and target.
     """
     # unpack dataset
     trainA, trainB = dataset
@@ -60,7 +60,8 @@ def generate_real_samples(dataset, n_samples, patch_shape, available_idx=None):
 
 def generate_fake_samples(g_model, samples, patch_shape):
     """
-    Function that generates a batch of images, returns images and targets.
+    Function that generates a batch of masks,
+    returns generated masks and targets.
     """
     # generate fake instance
     X = g_model.predict(samples)
